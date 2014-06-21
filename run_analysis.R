@@ -1,129 +1,159 @@
-## Prog 3 - Part 4
+## Project for Getting and Cleaning Data
 
-rankall <- function(out, num ="best") {
- 
-  ## Read outcome data
+if(!file.exits("./projectdata"))
+     {dir.create("./projectdata")}
+testdata <- read.txt("./data/")
+
+
+} 
+
+************************************
+## Merges the training and the test sets to create one data set.
   
-  outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
-  validoutcomes <- c("heart attack", "heart failure", "pneumonia")
+  ## This portion of the script combines the training data  
   
-  states <- outcome$State
-  validstates <- unique(states)
-  ##print(validstates)
+  ##  Step 1 - Read in test data (x_test.txt, y_test.txt, and subject_test.txt)
   
-  ## Check that outcome and ranking are valid
-  
-    
-    if (any(validoutcomes == out)){
-       ##print ("outcome is valid")
-    }
-    else {
-        stop ("invalid outcome")
-    }
-    
-    validnum<- 1:nrow(outcome)
-    if (num == "best" | num == "worst" | any(validnum == num)){
-       ##print ("num is valid rank")
-    }
-    else{
-      ##print (paste (num, " : not a valid number", sep = ""))
-    }
-  
-    
-  
-  ## All parameters are good -- let's get started
-  ## get specifiec ranking for each state
-  
-  savesplit <- split(outcome, outcome$State)    ## split data by states
-  numstates <- length(validstates)
-  ##print (numstates)
-  numtimes <- 0
-  for (i in 1:numstates){
-      numtimes <- numtimes + 1
-      ##print(numtimes)
-      state <- validstates[i]
-  
-      stateoutcome <- savesplit[[state]]   ## hardcode for now
-      ##print(state)
-      numhospitals <- nrow(stateoutcome)
-      ##print(numhospitals)
-      ## print(stateoutcome)
-  
-     ## if (out == "pneumonia"){
-     ## if (out == "heart attack"){
-     if (out == "heart failure"){
-        ##mortalityPn <- stateoutcome$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia
-        ##mortalityHA <- stateoutcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack
-       ##mortalityHF <- stateoutcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure
-       orderedlist <- stateoutcome[order(stateoutcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure,stateoutcome$Hospital.Name), ]
-      if (state == "AL") {
-        print(orderedlist[1:10,5:20])
-      }
-        
-     if ( num == "best"){
-        index <- which.min(mortalityPn)
-        hospital <- stateoutcome$"Hospital.Name"[index]
-        if (numtimes == 1){
-            hospitalandstate <- c(hospital, state)
-            
-        }
-        else {
-            ##hospitalandstate <- rbind.data.frame(hospitalandstate, c(hospital, state))
-          hospitalandstate <- rbind.data.frame(hospitalandstate, c(hospital, state))
-            
-        }
-    }
-    else if (num == "worst"){
-      index <- which.max(mortalityPn)
-      hospital <- stateoutcome$"Hospital.Name"[index]
-      if (numtimes == 1){
-        hospitalandstate <- c(hospital, state)
-        ##print(hospitalandstate)
-              
-      }
-      else if (numtimes > 1){
-        hospitalandstate <- rbind(hospitalandstate, c(hospital, state))
-        colnames(hospitalandstate) <- c( "hospital", "state")
-        
-      } 
-    }
-    else{
-      if (num <=  numhospitals){
-          index <- num
-          hospital <- orderedlist$"Hospital.Name"[index]
-          if (numtimes == 1){
-            hospitalandstate <- c(hospital, state)
-            ##print(hospitalandstate)
-            
-          }
-          else if (numtimes > 1){
-            hospitalandstate <- rbind(hospitalandstate, c(hospital, state))
-            colnames(hospitalandstate) <- c( "hospital", "state")
-            ##print(hospitalandstate)
-            
-          }
-      
-      }
-      else{
-          ## exclude state
-        ##print("number of hospitals less than rank")
-        ##print(state)
-      }
-    }
+  testdata <- read.table ("X_test.txt")
+  head(testdata)
+
+  y_test <- read.table ("y_test.txt")
+  head(y_test)
+
+  subject_test <- read.table("subject_test.txt")
+  head(subject_test)
+
+##  Add column names to test data,  read column name information from file.
+
+  features <- read.table ("features.txt")
+  features
+  colheader <- features[,2]
+
+  names(testdata) <- colheader
+  head(testdata,1)
+
+  names(y_test) <- c("test_activity")
+  names(y_test)
+  head(y_test,3)
+  names(subject_test)
+  names(subject_test) <- c("subject_identifier")
+  names(subject_test)
+
+
+## Change activity names to readable names in test data
+
+for (i in 1:nrow(y_test)){
+  if (y_test[i,] == "1"){
+    print(y_test[i,])
+    y_test[i,] <- "WALKING"
+  }
+  else if (y_test[i,] == "2"){
+    y_test[i,] <- "WALKING_UPSTAIRS"
+  }     else if ( y_test[i,] == "3"){
+    y_test[i,] <- "WALKING_DOWNSTAIRS"
+  }
+  else if (y_test[i,] == "4"){
+    y_test[i,] <- "SITTING"
+  }
+  else if(y_test[i,] == "5"){
+    print(y_test[i,])
+    y_test[i,] <- "STANDING"
+  }
+  else if (y_test[i,] == "6"){
+    y_test[i,] <- "LAYING"
   }
 }
-dframe<-data.frame(hospitalandstate)
-return(dframe)
+testdataframe <- cbind(y_test, subject_test, testdata)
+head(testdataframe, 1)
 
-  ## Return hospital name in that state with lowest 30-day death
-  ## rate
+### This portion of the script combines the training data
+
+trainingdata <- read.table ("X_train.txt")
+head(trainingdata)
+
+y_train <- read.table ("y_train.txt")
+head(y_train)
+
+subject_train <- read.table("subject_train.txt")
+head(subject_train)
+
+##  Add column names to test data,  read column name information from file.
+
+features <- read.table ("features.txt")
+features
+colheader <- features[,2]
+
+names(trainingdata) <- colheader
+head(trainingdata,1)
+
+names(y_train) <- c("test_activity")
+names(y_train)
+head(y_train,3)
+names(subject_train)
+names(subject_train) <- c("subject_identifier")
+names(subject_train)
+
+
+## Change activity names to readable names in test data
+
+for (i in 1:nrow(y_train)){
+  if (y_train[i,] == "1"){
+    print(y_train[i,])
+    y_train[i,] <- "WALKING"
+  }
+  else if (y_train[i,] == "2"){
+    y_train[i,] <- "WALKING_UPSTAIRS"
+  }     else if ( y_train[i,] == "3"){
+    y_train[i,] <- "WALKING_DOWNSTAIRS"
+  }
+  else if (y_train[i,] == "4"){
+    y_train[i,] <- "SITTING"
+  }
+  else if(y_train[i,] == "5"){
+    print(y_train[i,])
+    y_train[i,] <- "STANDING"
+  }
+  else if (y_train[i,] == "6"){
+    y_train[i,] <- "LAYING"
+  }
+}
+trainingtdataframe <- cbind(y_train, subject_train, trainingdata)
+head(trainingdataframe, 1)
+
+## Now combine the test data with the training data
+
+alldataframe <- rbind(testdataframe, trainingdataframe)
+
+## Need to extract only the measurements on the mean and standard deviation for each measurement.
+## get the columns that mean() and std()
+
+  extractCols <- grep("-mean\\(\\)|-std\\(\\)", names(alldataframe))
+  extractCols
+  nmeanstd <- length(extractCols)
+
+
+
+### reshape
+
+*************************************************  
+  ## executed from "projectdata" directory
+  ## copy all files to the "projectdata" direcory
   
-##  hospital <- orderedlist$"Hospital.Name"[index]
-##  hospital
-##  hospitalandstate <- c(hospital, state)
   
-} 
+  extractdataframe <- alldataframe[1]  #test_activityextractdataframe <- cbind(extractdataframe, alldataframe$"subject_identifier")
+  head(extractdataframe,3)
+  length(extractdataframe)
+  extractdataframe <- cbind(extractdataframe, alldataframe[2])   ##"subject_identifier")
+
   
   
-  
-## rankall ("pneumonia", "worst")
+#####
+
+Try "-mean\\(\\)"
+ncolumns <-length(extractCols)
+for(i in 1:ncolumns){
+  print(names(alldataframe[extractCols[i]]))
+  newcolumn[i] <- alldataframe[extractCols[i]]
+  extractdataframe <- cbind(extractdataframe, newcolumn[i])
+}  
+head(extractdataframe, 3)
