@@ -1,13 +1,5 @@
-## Project for Getting and Cleaning Data
-
-if(!file.exits("./projectdata"))
-     {dir.create("./projectdata")}
-testdata <- read.txt("./data/")
-
-
-} 
-
-************************************
+## This the the file that can run to achieve the Project Assignment
+## 
 ## Merges the training and the test sets to create one data set.
   
   ## This portion of the script combines the training data  
