@@ -4,7 +4,7 @@
   
 ## This portion of the script combines the training data  
   
-  ##  Step 1 - Read in test data (x_test.txt, y_test.txt, and subject_test.txt)
+##  Step 1 - Read in test data (x_test.txt, y_test.txt, and subject_test.txt)
   
   testdata <- read.table ("X_test.txt")
   head(testdata)
