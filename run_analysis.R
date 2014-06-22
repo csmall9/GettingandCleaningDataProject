@@ -56,7 +56,7 @@ for (i in 1:nrow(y_test)){
   }
 }
 
-## Now the the "test" data is tidy,  combine the test files
+## Now the "test" data is tidy,  combine the test files
 testdataframe <- cbind(y_test, subject_test, testdata)
 head(testdataframe, 1)
 
@@ -89,7 +89,7 @@ names(subject_train) <- c("subject_identifier")
 names(subject_train)
 
 
-## Change activity names to readable names in test data
+## Change activity names to readable names in training data
 
 for (i in 1:nrow(y_train)){
   if (y_train[i,] == "1"){
