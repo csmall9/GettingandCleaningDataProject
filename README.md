@@ -50,7 +50,24 @@ The run_script.R files does the following:
           -  tidy_data-averages_by_activityandsub.txt
 
 
-This run_script.R files contains extensive comments to guide you through the scripts.
+This run_script.R files contains extensive comments to guide you through the scripts.  Heres's the steps as presented in comments:
+1.Read in test data (x_test.txt, y_test.txt, and subject_test.txt)
+2.Add column names to test data,  read column name information from file.
+3.Change activity names to readable names in test data
+4.Now the  "test" data is tidy,  combine the test files
+5.This portion of the script combines the training data
+6.Add column names to training data,  read column name information from file.
+7.Change activity names to readable names in training data
+8.Combine the training data
+9.Need to extract only the measurements on the mean and standard deviation for each measurement.
+10.Get the columns that mean() and std()
+11.Now extract the mean() and std() columns and combine together in an new dataframe
+12.prior to writing the file, add the test activity and subject columns
+13.Write the extracted data file –
+14.Final activity is to generate an independent tidy file that calculates
+mean for the variables by activity and subject.
+
+
 
 For convenience, the following text has been provided for background on the experiements.
 ==================================================================
