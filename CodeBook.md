@@ -1,6 +1,6 @@
 This is a codebook for the Project
 
-----  The feature description came from the original experiment. The run_analysis.R only uses the mean() and std() functions.
+----  The feature description came from the original experiment. The run_analysis.R only uses the mean() and std() functions for the following variables.
 
 Feature Selection 
 =================
