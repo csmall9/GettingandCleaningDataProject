@@ -132,23 +132,24 @@ alldataframe <- rbind(testdataframe, trainingdataframe)
 
 ncolumns <-length(extractCols)
 colnums <- 0  
-for(i in 1:ncolumns){
-  colnums <- colnums +1
-  newcolumn <- alldataframe[extractCols[i]]
-  if (colnums == 1){
-  print(names(alldataframe[extractCols[i]]))
-  extractdataframe <- newcolumn
+  for(i in 1:ncolumns){
+    colnums <- colnums +1
+    newcolumn <- alldataframe[extractCols[i]]
+    if (colnums == 1){
+      print(names(alldataframe[extractCols[i]]))
+      extractdataframe <- newcolumn
+    }
+    else{
+      extractdataframe <- cbind(extractdataframe, newcolumn)
+    } 
   }
-  else{
-  extractdataframe <- cbind(extractdataframe, newcolumn)
-  } 
-}
+  
 head(extractdataframe, 3)
   
 ## prior to writing the file, add the test activity and subject colums
 
-  test_activity <- alldataframe$"test_activity"
-  subject_identifier <- alldataframe$"subject_identifier"
+  testactivity <- alldataframe$"test_activity"
+  subject <- alldataframe$"subject_identifier"
   columns <- cbind.data.frame(testactivity, subject)
   names(columns) <- c("test_activity", "subject_identifier")
   head(columns,3)  
@@ -158,62 +159,23 @@ head(extractdataframe, 3)
   
 ## Write the extracted data file -- 
 
-write.table(extractdataframe, file = "projectdataExtract2-tidy.txt", append = FALSE, quote = FALSE, sep = " ",
-            eol = "\n", na = "NA", dec = ".", row.names = FALSE,
-            col.names = TRUE, qmethod = c("escape", "double"),
-            fileEncoding = "")
-
-### Need to generate the independent tidy file
-
-#################################################################  
-
-  
-  
-  extractdataframe <- alldataframe[1]  #test_activityextractdataframe <- cbind(extractdataframe, alldataframe$"subject_identifier")
-  head(extractdataframe,3)
-  length(extractdataframe)
-  extractdataframe <- cbind(extractdataframe, alldataframe[2])   ##"subject_identifier")
-
-activitysplit <- split(extractdataframe, extractdataframe$test_activity)
-
-names(activitysplit)
-      activitysplit[[1]]$"fBodyAccJerk-std()-X"
-
-mean1 <- mean(activitysplit[[1]]$"fBodyAccJerk-std()-X")
-
-
-  
-  
-#####
-
-
-  
-  ## combine extracted variables with test and subject columns
-  
-  testactivity <- alldataframe$"test_activity"
-  subject <- alldataframe$"subject_identifier"
-  columns <- cbind(testactivity, subject)
-  head(columns,3)
-  
-head(extractdataframe, 3)
-
 write.table(extractdataframe, file = "projectdataExtract-tidy.txt", append = FALSE, quote = FALSE, sep = " ",
             eol = "\n", na = "NA", dec = ".", row.names = FALSE,
             col.names = TRUE, qmethod = c("escape", "double"),
             fileEncoding = "")
 
-length(activitysplit)
 
 ## Final activity is to generate an independent tidy file that calculates
 ## mean for the variables by activity and subject.  
 
-mean1<- mean(activitysplit[1]$"fBodyBodyAccJerkMag-mean()")
-newframe <- tapply(extractdataframe$"fBodyBodyGyroJerkMag-std()", extractdataframe$"test_activity",mean)
+
+##newframe <- tapply(extractdataframe$"fBodyBodyGyroJerkMag-std()", extractdataframe$"test_activity",mean)
 
 rownumber <- 0
 for (i in 3:68){
-  rowinframe <- tapply(extractdataframe[,i], extractdataframe$"test_activity",mean)
-  rownumber<- rownumber +1
+  rowinframe <- tapply(extractdataframe[,i], list(extractdataframe$"test_activity",extractdataframe$"subject_identifier"),mean)
+  ## tapply(starttime,list(submitdate, surveyor),min)
+  rownumber<- rownumber + 1
   if (i == 3) { 
       totalnewframe <- rowinframe
   }
@@ -221,10 +183,9 @@ for (i in 3:68){
     totalnewframe <- rbind(totalnewframe, rowinframe)
   }
 } 
-rownames(totalnewframe) <- allcolumns[3:68]
+## rownames(totalnewframe) <- extractdataframe[3:68]
 
-write.table(totalnewframe, file = "tidy_data-averages_by_activity.txt", append = FALSE, quote = FALSE, sep = " ",
+write.table(totalnewframe, file = "tidy_data-averages_by_activity2.txt", append = FALSE, quote = FALSE, sep = " ",
             eol = "\n", na = "NA", dec = ".", row.names = TRUE,
             col.names = TRUE, qmethod = c("escape", "double"),
             fileEncoding = "")
-e
